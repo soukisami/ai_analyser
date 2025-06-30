@@ -1,10 +1,11 @@
 from crewai import Agent, LLM
 import os
+from dotenv import load_dotenv
 
 def get_llm():
     """Initialize Google Gemini LLM"""
     # Get API key from environment variable for security
-    api_key = "AIzaSyDqK1g4s5W0cSRiiyrAhJafGACaKiwCBs4"
+    api_key = os.getenv("LLM_API_KEY")
     if not api_key:
         raise ValueError("GOOGLE_API_KEY environment variable not set")
 
