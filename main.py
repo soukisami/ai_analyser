@@ -175,3 +175,4 @@ if __name__ == "__main__":
         print("   - Make sure all required dependencies are installed (crewai, etc.)")
         print("\n🔧 For detailed error information, check the full error trace above.")
         print(f"Error: {e}")
+        

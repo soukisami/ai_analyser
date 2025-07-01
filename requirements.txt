@@ -1,6 +1,13 @@
-crewai['tools']
+
 langchain-google-genai
 langchain-community
 langchain-core
 google-generativeai
 python-dotenv
+crewai
+dotenv
+matplotlib
+seaborn
+pandas
+numpy
+plotly
