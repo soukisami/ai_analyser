@@ -234,12 +234,39 @@ def create_kpi_definition_task(agent):
         agent=agent
     )
 
-def create_report_synthesis_task(agent):
+def create_report_synthesis_task(agent, previous_results):
     """Create the comprehensive report synthesis task"""
     return Task(
-        description="""
+        description=f"""
         Synthesize all previous analyses into a comprehensive strategic report.
-        
+
+        Product Idea Structuring:
+        {previous_results.get('product_idea_structuring', '')}
+
+        Market Research:
+        {previous_results.get('market_research', '')}
+
+        Competitive Analysis:
+        {previous_results.get('competitive_analysis', '')}
+
+        SWOT Analysis:
+        {previous_results.get('swot_analysis', '')}
+
+        Financial Projections:
+        {previous_results.get('financial_projections', '')}
+
+        Technical Feasibility:
+        {previous_results.get('technical_feasibility', '')}
+
+        Customer Segmentation:
+        {previous_results.get('customer_segmentation', '')}
+
+        Marketing Strategy:
+        {previous_results.get('marketing_strategy', '')}
+
+        KPI Definition:
+        {previous_results.get('kpi_definition', '')}
+
         Compile and synthesize:
         1. Executive summary with key findings
         2. Strategic recommendations

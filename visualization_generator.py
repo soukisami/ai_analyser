@@ -339,47 +339,76 @@ class ProductAnalysisVisualizer:
         plt.close()
         return f'{self.output_dir}/kpi_dashboard.png'
     
-    def generate_all_visualizations(self):
+    def generate_all_visualizations(self, results=None):
         """Generate all visualizations and return file paths"""
         print("📊 Generating visualizations...")
-        
+
         generated_files = []
-        
+
+        # Helper to extract data from text (very basic, you may want to improve parsing)
+        def extract_market_data(market_text):
+            # Try to extract numbers from the text, fallback to None
+            # You can improve this with regex or structured output from agents
+            return None
+
+        def extract_competitors_data(competitive_text):
+            return None
+
+        def extract_financial_data(financial_text):
+            return None
+
+        def extract_customer_data(customer_text):
+            return None
+
+        def extract_timeline_data(report_text):
+            return None
+
+        def extract_kpi_data(kpi_text):
+            return None
+
+        # Use real data if available, else fallback to static
+        market_data = extract_market_data(results.get("market_research", "")) if results else None
+        competitors_data = extract_competitors_data(results.get("competitive_analysis", "")) if results else None
+        financial_data = extract_financial_data(results.get("financial_projections", "")) if results else None
+        customer_data = extract_customer_data(results.get("customer_segmentation", "")) if results else None
+        timeline_data = extract_timeline_data(results.get("marketing_strategy", "")) if results else None
+        kpi_data = extract_kpi_data(results.get("kpi_definition", "")) if results else None
+
         try:
-            generated_files.append(self.create_market_size_chart())
+            generated_files.append(self.create_market_size_chart(market_data))
             print("✅ Market size chart created")
         except Exception as e:
             print(f"❌ Error creating market size chart: {e}")
-        
+
         try:
-            generated_files.append(self.create_competitive_positioning_map())
+            generated_files.append(self.create_competitive_positioning_map(competitors_data))
             print("✅ Competitive positioning map created")
         except Exception as e:
             print(f"❌ Error creating competitive positioning map: {e}")
-        
+
         try:
-            generated_files.append(self.create_financial_projections_chart())
+            generated_files.append(self.create_financial_projections_chart(financial_data))
             print("✅ Financial projections chart created")
         except Exception as e:
             print(f"❌ Error creating financial projections chart: {e}")
-        
+
         try:
-            generated_files.append(self.create_customer_segmentation_chart())
+            generated_files.append(self.create_customer_segmentation_chart(customer_data))
             print("✅ Customer segmentation chart created")
         except Exception as e:
             print(f"❌ Error creating customer segmentation chart: {e}")
-        
+
         try:
-            generated_files.append(self.create_implementation_timeline())
+            generated_files.append(self.create_implementation_timeline(timeline_data))
             print("✅ Implementation timeline created")
         except Exception as e:
             print(f"❌ Error creating implementation timeline: {e}")
-        
+
         try:
-            generated_files.append(self.create_kpi_dashboard_mockup())
+            generated_files.append(self.create_kpi_dashboard_mockup(kpi_data))
             print("✅ KPI dashboard mockup created")
         except Exception as e:
             print(f"❌ Error creating KPI dashboard: {e}")
-        
+
         print(f"📊 Generated {len(generated_files)} visualizations in '{self.output_dir}' folder")
         return generated_files
