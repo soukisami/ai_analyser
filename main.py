@@ -1,4 +1,3 @@
-
 import os
 import sys
 import traceback
@@ -216,9 +215,9 @@ def run_full_analysis(product_idea):
         task = create_kpi_definition_task(agents['kpi_metrics'])
         results['kpi_definition'] = run_task(task, agents['kpi_metrics'], "KPI Definition")
         
-        # 10. Report Synthesis
+        # 10. Report Synthesis (acts as an executive summary)
         task = create_report_synthesis_task(agents['report_synthesizer'], results)
-        final_report = run_task(task, agents['report_synthesizer'], "Report Synthesis")
+        summary_report = run_task(task, agents['report_synthesizer'], "Report Synthesis")
         
         # Generate visualizations
         try:
@@ -230,21 +229,28 @@ def run_full_analysis(product_idea):
             print(f"❌ Visualization generation failed: {e}")
             images = []
         
-        # Generate HTML report
+        # Generate HTML report with summary and all detailed results
         try:
             from webpage import generate_report_webpage
-            generate_report_webpage(final_report, images)
+            generate_report_webpage(summary_report, results, images)
             print("📄 HTML report generated successfully")
         except Exception as e:
             print(f"❌ HTML report generation failed: {e}")
         
+        # Console output
         print("\n" + "~" * 82)
         print("🎉 COMPREHENSIVE PRODUCT ANALYSIS COMPLETED")
         print("~" * 82)
-        print(final_report)
+        print("Executive Summary:\n", summary_report)
+        print("\n" + "-"*40 + "\n")
+        print("Detailed Agent Outputs:\n")
+        for agent, result in results.items():
+            print(f"--- {agent.replace('_', ' ').title()} ---")
+            print(result)
+            print("\n")
         print("~" * 82)
         
-        return final_report
+        return {'summary': summary_report, 'details': results}
         
     except Exception as e:
         print(f"❌ Full analysis failed: {e}")

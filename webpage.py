@@ -1,9 +1,10 @@
 import webbrowser
 import os
 import base64
+from datetime import datetime
 
-def generate_report_webpage(analysis_text, image_paths, output_file="product_report.html"):
-    """Generate an enhanced HTML report with embedded visualizations"""
+def generate_report_webpage(summary_text, detailed_results, image_paths, output_file="product_report.html"):
+    """Generate an enhanced HTML report with a summary, detailed agent outputs, and embedded visualizations."""
     
     # Start HTML with enhanced styling
     html_content = """
@@ -19,8 +20,8 @@ def generate_report_webpage(analysis_text, image_paths, output_file="product_rep
                 line-height: 1.6;
                 margin: 0;
                 padding: 20px;
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                min-height: 100vh;
+                background: #f4f7f6;
+                color: #333;
             }
             .container {
                 max-width: 1200px;
@@ -74,6 +75,7 @@ def generate_report_webpage(analysis_text, image_paths, output_file="product_rep
                 white-space: pre-wrap;
                 border: 1px solid #e9ecef;
                 box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+                word-wrap: break-word;
             }
             .visualizations {
                 display: grid;
@@ -110,7 +112,8 @@ def generate_report_webpage(analysis_text, image_paths, output_file="product_rep
                 background: #f8f9fa;
                 padding: 20px;
                 border-radius: 10px;
-                margin-bottom: 30px;
+                margin-bottom: 40px;
+                border-left: 5px solid #764ba2;
             }
             .toc h3 {
                 margin-top: 0;
@@ -119,6 +122,9 @@ def generate_report_webpage(analysis_text, image_paths, output_file="product_rep
             .toc ul {
                 list-style: none;
                 padding: 0;
+                columns: 2;
+                -webkit-columns: 2;
+                -moz-columns: 2;
             }
             .toc li {
                 padding: 8px 0;
@@ -154,19 +160,61 @@ def generate_report_webpage(analysis_text, image_paths, output_file="product_rep
             </div>
             
             <div class="content">
+    """
+    
+    # Table of Contents
+    html_content += """
                 <div class="toc">
                     <h3>📋 Table of Contents</h3>
                     <ul>
-                        <li><a href="#analysis">🔍 Analysis Report</a></li>
+                        <li><a href="#summary">📝 Executive Summary</a></li>
+    """
+    for agent_name in detailed_results.keys():
+        title = agent_name.replace('_', ' ').title()
+        anchor = agent_name
+        html_content += f'<li><a href="#{anchor}">{title}</a></li>'
+
+    html_content += """
                         <li><a href="#visualizations">📊 Visual Insights</a></li>
                     </ul>
                 </div>
-                
-                <div class="section" id="analysis">
-                    <h2>🔍 Comprehensive Analysis Report</h2>
-                    <div class="analysis-text">""" + str(analysis_text) + """</div>
+    """
+
+    # Executive Summary Section
+    html_content += f"""
+                <div class="section" id="summary">
+                    <h2>📝 Executive Summary</h2>
+                    <div class="analysis-text">{str(summary_text)}</div>
                 </div>
-                
+    """
+
+    # Sections for each agent's detailed results
+    agent_icons = {
+        'product_idea_intake': '💡',
+        'market_research': '📈',
+        'competitive_analyst': '🎯',
+        'strategic_analyst': '⚖️',
+        'financial_analyst': '💰',
+        'technical_feasibility': '🔧',
+        'customer_insights': '👥',
+        'marketing_strategist': '📢',
+        'kpi_metrics': '📊',
+        'report_synthesizer': '📝' # Should not appear if summary is separate
+    }
+
+    for agent_name, result_text in detailed_results.items():
+        title = agent_name.replace('_', ' ').title()
+        anchor = agent_name
+        icon = agent_icons.get(agent_name, '🔍')
+        html_content += f"""
+                <div class="section" id="{anchor}">
+                    <h2>{icon} {title}</h2>
+                    <div class="analysis-text">{str(result_text)}</div>
+                </div>
+        """
+
+    # Visualizations section
+    html_content += """
                 <div class="section" id="visualizations">
                     <h2>📊 Visual Insights & Data Visualizations</h2>
                     <div class="visualizations">
@@ -190,7 +238,7 @@ def generate_report_webpage(analysis_text, image_paths, output_file="product_rep
             try:
                 # Get filename for title lookup
                 filename = os.path.basename(img_path)
-                title = viz_titles.get(filename, f"📊 {filename.replace('_', ' ').title()}")
+                title = viz_titles.get(filename, f"📊 {filename.replace('_', ' ').replace('.png', '').title()}")
                 
                 # Convert image to base64 for embedding
                 with open(img_path, 'rb') as img_file:
@@ -205,13 +253,6 @@ def generate_report_webpage(analysis_text, image_paths, output_file="product_rep
                 """
             except Exception as e:
                 print(f"Warning: Could not embed image {img_path}: {e}")
-                # Fallback to file path
-                html_content += f"""
-                        <div class="viz-card">
-                            <h3>{viz_titles.get(os.path.basename(img_path), 'Visualization')}</h3>
-                            <img src="{img_path}" alt="Visualization">
-                        </div>
-                """
     
     # Close HTML
     html_content += """
@@ -242,6 +283,3 @@ def generate_report_webpage(analysis_text, image_paths, output_file="product_rep
         
     except Exception as e:
         print(f"❌ Error generating webpage: {e}")
-
-# Add datetime import at the top
-from datetime import datetime
