@@ -16,11 +16,11 @@ def check_prerequisites():
     print("🔍 Checking prerequisites...")
     
     # Check environment variables
-    api_key = os.getenv("LLM_API_KEY")
+    api_key = os.getenv("OPENROUTER_API_KEY")
     if not api_key:
-        print("❌ LLM_API_KEY not found in environment variables")
+        print("❌ OPENROUTER_API_KEY not found in environment variables")
         print("   Please create a .env file with your Google API key:")
-        print("   LLM_API_KEY=your_google_api_key_here")
+        print("   OPENROUTER_API_KEY=your_google_api_key_here")
         return False
     
     # Check required imports

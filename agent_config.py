@@ -6,35 +6,56 @@ from dotenv import load_dotenv
 load_dotenv()
 
 def get_llm():
-    """Initialize Google Gemini LLM with error handling"""
+    """Initialize OpenRouter LLM with proper model configuration"""
     try:
         # Get API key from environment variable
-        api_key = os.getenv("LLM_API_KEY")
+        api_key = os.getenv("OPENROUTER_API_KEY")
         if not api_key:
-            raise ValueError("LLM_API_KEY environment variable not set. Please check your .env file.")
+            raise ValueError("OPENROUTER_API_KEY environment variable not set. Please check your .env file.")
         
         # Validate API key format (basic check)
         if len(api_key) < 10:
-            raise ValueError("LLM_API_KEY appears to be invalid (too short)")
+            raise ValueError("OPENROUTER_API_KEY appears to be invalid (too short)")
         
+        # Use a verified OpenRouter model (GPT-4 Turbo)
         llm = LLM(
-            model="gemini/gemini-1.5-flash",
+            model="openrouter/meta-llama/llama-4-maverick:free",  # Changed from "openrouter/cypher-alpha" to a verified model
             temperature=0.7,
             api_key=api_key,
-            max_tokens=2000
+            max_tokens=12000,
+            base_url="https://openrouter.ai/api/v1",  # Changed from api_base to base_url
+            extra_headers={
+                "HTTP-Referer": "https://github.com/your-username/your-repo",  # Optional: Add your site URL
+                "X-Title": "Product Analysis System"  # Optional: Add your app name
+            }
         )
         
-        print("✅ LLM initialized successfully")
+        print("✅ OpenRouter LLM initialized successfully with GPT-4 Turbo")
         return llm
         
     except Exception as e:
         print(f"❌ Error initializing LLM: {e}")
         print("💡 Troubleshooting tips:")
-        print("   - Verify your Google API key is valid and active")
-        print("   - Ensure you have enabled the Generative AI API in Google Cloud")
-        print("   - Check your internet connection")
-        print("   - Verify you have sufficient API quota remaining")
-        raise
+        print("   - Verify your OpenRouter API key is correct and active")
+        print("   - Check if you have credits/quota remaining on OpenRouter")
+        print("   - Verify internet connection")
+        print("   - Try a different model if this one isn't available")
+        
+        # Fallback to a different model
+        try:
+            print("🔄 Attempting fallback to GPT-3.5 Turbo...")
+            llm = LLM(
+                model="openai/gpt-3.5-turbo",
+                temperature=0.7,
+                api_key=api_key,
+                max_tokens=2000,
+                base_url="https://openrouter.ai/api/v1"
+            )
+            print("✅ Fallback successful - using GPT-3.5 Turbo")
+            return llm
+        except Exception as fallback_error:
+            print(f"❌ Fallback also failed: {fallback_error}")
+            raise
 
 # Initialize LLM globally
 llm = get_llm()
