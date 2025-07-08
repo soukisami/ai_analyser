@@ -1,7 +1,3 @@
-#!/usr/bin/env python3
-"""
-Fixed main script for AI-Powered Comprehensive Product Analysis System
-"""
 
 import os
 import sys
